@@ -21,6 +21,72 @@ class SceneRenderer {
         this.ctx.clearRect(0, 0, this.width, this.height);
     }
 
+    // Draw first-person hands/arms at bottom of screen
+    drawPlayerHands() {
+        const handWidth = 200;
+        const handHeight = 250;
+
+        // Left arm/hand
+        this.ctx.save();
+        const leftX = -50;
+        const leftY = this.height - handHeight + 50;
+
+        // Sleeve
+        const sleeveGradient = this.ctx.createLinearGradient(leftX, leftY, leftX + 100, leftY + 100);
+        sleeveGradient.addColorStop(0, '#1a1a2a');
+        sleeveGradient.addColorStop(1, '#0a0a15');
+        this.ctx.fillStyle = sleeveGradient;
+        this.ctx.fillRect(leftX, leftY + 150, 150, 120);
+
+        // Cyber implant glow on wrist
+        const implantGlow = this.ctx.createRadialGradient(leftX + 80, leftY + 180, 0, leftX + 80, leftY + 180, 30);
+        implantGlow.addColorStop(0, 'rgba(0, 255, 255, 0.8)');
+        implantGlow.addColorStop(1, 'rgba(0, 255, 255, 0)');
+        this.ctx.fillStyle = implantGlow;
+        this.ctx.fillRect(leftX + 50, leftY + 150, 60, 60);
+
+        // Glowing lines (neural implants)
+        this.ctx.strokeStyle = '#00ffff';
+        this.ctx.lineWidth = 2;
+        this.ctx.shadowBlur = 10;
+        this.ctx.shadowColor = '#00ffff';
+        for (let i = 0; i < 3; i++) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(leftX + 70, leftY + 170 + i * 10);
+            this.ctx.lineTo(leftX + 110, leftY + 170 + i * 10);
+            this.ctx.stroke();
+        }
+        this.ctx.shadowBlur = 0;
+
+        this.ctx.restore();
+
+        // Right arm/hand
+        this.ctx.save();
+        const rightX = this.width - 150;
+        const rightY = this.height - handHeight + 80;
+
+        // Sleeve
+        const rightSleeveGradient = this.ctx.createLinearGradient(rightX, rightY, rightX + 100, rightY + 100);
+        rightSleeveGradient.addColorStop(0, '#1a1a2a');
+        rightSleeveGradient.addColorStop(1, '#0a0a15');
+        this.ctx.fillStyle = rightSleeveGradient;
+        this.ctx.fillRect(rightX, rightY + 150, 200, 120);
+
+        // Cyber implant on right wrist
+        const rightImplantGlow = this.ctx.createRadialGradient(rightX + 60, rightY + 190, 0, rightX + 60, rightY + 190, 25);
+        rightImplantGlow.addColorStop(0, 'rgba(255, 0, 255, 0.8)');
+        rightImplantGlow.addColorStop(1, 'rgba(255, 0, 255, 0)');
+        this.ctx.fillStyle = rightImplantGlow;
+        this.ctx.fillRect(rightX + 35, rightY + 165, 50, 50);
+
+        this.ctx.restore();
+    }
+
+    // Camera bob effect for movement feel
+    getCameraBob() {
+        return Math.sin(this.animationFrame * 0.05) * 5;
+    }
+
     // RENDER BAR SCENE
     renderBar() {
         this.clear();
@@ -125,6 +191,9 @@ class SceneRenderer {
             this.ctx.fillRect(x - 100, y - 100, 200, 200);
         }
 
+        // Draw player hands in first-person view
+        this.drawPlayerHands();
+
         this.animationFrame++;
     }
 
@@ -198,6 +267,9 @@ class SceneRenderer {
             this.drawSpark(x, y);
         }
 
+        // Draw player hands in first-person view
+        this.drawPlayerHands();
+
         this.animationFrame++;
     }
 
@@ -268,6 +340,9 @@ class SceneRenderer {
         this.ctx.fillStyle = '#ff00ff40';
         this.ctx.fillRect(this.width * 0.85, this.height * 0.75, this.width * 0.15, 5);
 
+        // Draw player hands in first-person view
+        this.drawPlayerHands();
+
         this.animationFrame++;
     }
 
@@ -301,6 +376,9 @@ class SceneRenderer {
             // Fallback if image not loaded
             this.renderMallFallback();
         }
+
+        // Draw player hands in first-person view
+        this.drawPlayerHands();
     }
 
     renderMallFallback() {

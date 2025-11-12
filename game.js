@@ -168,21 +168,8 @@ class CyberpunkGame {
         button.className = 'choice-btn fade-in';
         button.style.animationDelay = `${index * 0.1}s`;
 
-        // Main text
-        const mainText = document.createElement('div');
-        mainText.style.fontSize = '1.2rem';
-        mainText.style.marginBottom = '0.5rem';
-        mainText.textContent = choice.text;
-
-        // Hint text
-        const hintText = document.createElement('div');
-        hintText.style.fontSize = '0.9rem';
-        hintText.style.opacity = '0.7';
-        hintText.style.fontStyle = 'italic';
-        hintText.textContent = choice.hint;
-
-        button.appendChild(mainText);
-        button.appendChild(hintText);
+        // Just the action text - game style
+        button.textContent = choice.text;
 
         // Add hover sound effect
         button.addEventListener('mouseenter', () => {

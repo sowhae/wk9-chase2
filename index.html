@@ -16,9 +16,17 @@
     <!-- Particle Effects Canvas -->
     <canvas id="particleCanvas"></canvas>
 
+    <!-- Game HUD -->
+    <div id="statusBar">
+        <span id="locationStatus"></span>
+    </div>
+
+    <!-- Crosshair -->
+    <div class="hud-crosshair"></div>
+
     <!-- Main Game Container -->
     <div id="gameContainer">
-        <!-- Story Text Display -->
+        <!-- Story Text Display (hidden in game mode) -->
         <div id="storyDisplay">
             <h1 id="sceneTitle"></h1>
             <div id="sceneDescription"></div>
@@ -26,11 +34,6 @@
 
         <!-- Choice Buttons Container -->
         <div id="choicesContainer"></div>
-
-        <!-- Status Bar -->
-        <div id="statusBar">
-            <span id="locationStatus"></span>
-        </div>
     </div>
 
     <!-- Loading Screen -->
