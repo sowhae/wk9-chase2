@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberpunk Chase - Interactive Story</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 3D Canvas Background -->
+    <canvas id="bgCanvas"></canvas>
+
+    <!-- Particle Effects Canvas -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Main Game Container -->
+    <div id="gameContainer">
+        <!-- Story Text Display -->
+        <div id="storyDisplay">
+            <h1 id="sceneTitle"></h1>
+            <div id="sceneDescription"></div>
+        </div>
+
+        <!-- Choice Buttons Container -->
+        <div id="choicesContainer"></div>
+
+        <!-- Status Bar -->
+        <div id="statusBar">
+            <span id="locationStatus"></span>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+        <div class="glitch-text">LOADING...</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+    </div>
+
+    <!-- Ending Screen -->
+    <div id="endingScreen" style="display: none;">
+        <h1 id="endingTitle"></h1>
+        <p id="endingDescription"></p>
+        <button id="restartButton" class="choice-btn">RESTART</button>
+    </div>
+
+    <!-- Import Three.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Game Scripts -->
+    <script src="scenes.js"></script>
+    <script src="particles.js"></script>
+    <script src="visuals.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
