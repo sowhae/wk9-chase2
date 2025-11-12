@@ -89,8 +89,8 @@ class CyberpunkGame {
         // Simulate loading
         setTimeout(() => {
             this.hideLoading();
-            this.loadScene('bar_intro');
-        }, 2000);
+            this.loadScene('bar_start');
+        }, 1500);
     }
 
     hideLoading() {
@@ -164,33 +164,41 @@ class CyberpunkGame {
     }
 
     createChoiceButton(choice, index) {
-        const button = document.createElement('button');
-        button.className = 'choice-btn fade-in';
-        button.style.animationDelay = `${index * 0.1}s`;
+        // CREATE VISUAL MARKER INSTEAD OF TEXT
+        const marker = document.createElement('div');
+        marker.className = 'visual-choice-marker';
 
-        // Just the action text - game style
-        button.textContent = choice.text;
+        // Position based on choice index (left, center, right)
+        const positions = [
+            { left: '20%', top: '50%' },      // Left choice
+            { left: '50%', top: '40%' },      // Center/Up choice
+            { right: '20%', top: '50%' }      // Right choice
+        ];
 
-        // Add hover sound effect
-        button.addEventListener('mouseenter', () => {
-            this.playHoverSound();
-        });
+        const pos = positions[index] || positions[1];
+        Object.assign(marker.style, pos);
+        marker.style.transform = 'translate(-50%, -50%)';
 
         // Add click handler
-        button.addEventListener('click', () => {
+        marker.addEventListener('click', () => {
             this.playClickSound();
             this.makeChoice(choice);
         });
 
-        this.choicesContainer.appendChild(button);
+        // Add hover effect
+        marker.addEventListener('mouseenter', () => {
+            this.playHoverSound();
+        });
+
+        this.choicesContainer.appendChild(marker);
     }
 
     makeChoice(choice) {
-        // Disable all buttons
-        const buttons = this.choicesContainer.querySelectorAll('.choice-btn');
-        buttons.forEach(btn => {
-            btn.disabled = true;
-            btn.style.opacity = '0.5';
+        // Remove all visual markers
+        const markers = this.choicesContainer.querySelectorAll('.visual-choice-marker');
+        markers.forEach(marker => {
+            marker.style.opacity = '0';
+            marker.style.pointerEvents = 'none';
         });
 
         // Flash effect
@@ -199,54 +207,47 @@ class CyberpunkGame {
         // Load next scene after delay
         setTimeout(() => {
             this.loadScene(choice.nextScene);
-        }, 500);
+        }, 300);
     }
 
     showEnding(scene) {
-        const gameContainer = document.getElementById('gameContainer');
-        gameContainer.style.opacity = '0';
+        // NO ENDING SCREEN - just keep showing the visual
+        // The scene renderer will show the ending visually
+        console.log(`Ending reached: ${scene.endingType}`);
 
+        // After 3 seconds, show restart option
         setTimeout(() => {
-            gameContainer.style.display = 'none';
+            this.showRestartOption();
+        }, 3000);
+    }
 
-            // Set ending content
-            this.endingTitle.textContent = scene.title;
-            this.endingDescription.innerHTML = this.formatDescription(scene.description);
+    showRestartOption() {
+        // Add a visual restart marker
+        const restartMarker = document.createElement('div');
+        restartMarker.className = 'visual-choice-marker';
+        restartMarker.style.left = '50%';
+        restartMarker.style.top = '80%';
+        restartMarker.style.transform = 'translate(-50%, -50%)';
+        restartMarker.style.width = '120px';
+        restartMarker.style.height = '120px';
 
-            // Show ending screen
-            this.endingScreen.style.display = 'flex';
-            this.endingScreen.style.opacity = '0';
+        restartMarker.addEventListener('click', () => {
+            this.restart();
+        });
 
-            setTimeout(() => {
-                this.endingScreen.style.opacity = '1';
-            }, 100);
-
-            // Play ending sound
-            this.playEndingSound(scene.endingType);
-        }, 500);
+        this.choicesContainer.appendChild(restartMarker);
     }
 
     restart() {
-        // Fade out ending screen
-        this.endingScreen.style.opacity = '0';
+        // Clear all markers
+        this.choicesContainer.innerHTML = '';
 
-        setTimeout(() => {
-            this.endingScreen.style.display = 'none';
+        // Reset game state
+        this.gameHistory = [];
+        this.currentScene = null;
 
-            // Reset game state
-            this.gameHistory = [];
-            this.currentScene = null;
-
-            // Show game container
-            const gameContainer = document.getElementById('gameContainer');
-            gameContainer.style.display = 'flex';
-            gameContainer.style.opacity = '0';
-
-            setTimeout(() => {
-                gameContainer.style.opacity = '1';
-                this.loadScene('bar_intro');
-            }, 100);
-        }, 500);
+        // Restart from beginning
+        this.loadScene('bar_start');
     }
 
     flashScreen() {

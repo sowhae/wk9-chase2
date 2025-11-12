@@ -74,187 +74,94 @@ body {
     pointer-events: auto;
 }
 
-/* Story Display - Minimal HUD style */
+/* Story Display - HIDDEN - NO TEXT */
 #storyDisplay {
-    display: none; /* Hide story text completely for game mode */
-}
-
-@keyframes borderPulse {
-    0%, 100% {
-        border-color: var(--neon-cyan);
-        box-shadow: 0 0 20px var(--neon-cyan), inset 0 0 20px rgba(0, 255, 255, 0.1);
-    }
-    50% {
-        border-color: var(--neon-pink);
-        box-shadow: 0 0 30px var(--neon-pink), inset 0 0 20px rgba(255, 0, 255, 0.1);
-    }
+    display: none !important;
 }
 
 #sceneTitle {
-    font-size: 2.5rem;
-    color: var(--neon-pink);
-    text-shadow:
-        0 0 10px var(--neon-pink),
-        0 0 20px var(--neon-pink),
-        0 0 30px var(--neon-pink);
-    margin-bottom: 1.5rem;
-    letter-spacing: 3px;
-    animation: glitchTitle 3s infinite;
-}
-
-@keyframes glitchTitle {
-    0%, 90%, 100% {
-        transform: translate(0);
-        opacity: 1;
-    }
-    92% {
-        transform: translate(-2px, 2px);
-        opacity: 0.8;
-    }
-    94% {
-        transform: translate(2px, -2px);
-        opacity: 0.9;
-    }
-    96% {
-        transform: translate(-2px, -2px);
-        opacity: 0.8;
-    }
+    display: none !important;
 }
 
 #sceneDescription {
-    font-size: 0.9rem;
-    line-height: 1.5;
-    color: var(--neon-cyan);
-    text-shadow: 0 0 5px var(--neon-cyan);
-    opacity: 0.8;
-    max-height: 150px;
-    overflow-y: auto;
-    margin-top: 0.5rem;
+    display: none !important;
 }
 
-#sceneDescription::-webkit-scrollbar {
-    width: 5px;
+/* Status Bar - HIDDEN - NO TEXT */
+#statusBar {
+    display: none !important;
 }
 
-#sceneDescription::-webkit-scrollbar-track {
-    background: rgba(0, 255, 255, 0.1);
+#locationStatus {
+    display: none !important;
 }
 
-#sceneDescription::-webkit-scrollbar-thumb {
-    background: var(--neon-cyan);
-    border-radius: 5px;
-}
-
-#sceneDescription p {
-    margin-bottom: 0.5rem;
-    font-size: 0.85rem;
-}
-
-/* Choices Container - Cyberpunk 2077 style dialogue */
+/* Choices Container - VISUAL ONLY - NO TEXT */
 #choicesContainer {
     position: fixed;
-    bottom: 80px;
-    left: 50px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    pointer-events: none;
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    max-width: 500px;
-    width: auto;
-    z-index: 100;
-}
-
-/* Choice Buttons - Game dialogue style */
-.choice-btn {
-    background: linear-gradient(90deg, rgba(0, 212, 255, 0.15) 0%, transparent 100%);
-    border: none;
-    border-left: 3px solid var(--neon-cyan);
-    color: #ffffff;
-    padding: 0.8rem 1.5rem;
-    padding-left: 1rem;
-    font-size: 1rem;
-    font-family: 'Courier New', monospace;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-transform: none;
-    letter-spacing: 0.5px;
-    position: relative;
-    text-align: left;
-    display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 0.5rem;
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
 }
 
-.choice-btn::before {
-    content: '▶';
-    color: var(--neon-cyan);
-    font-size: 0.8rem;
-    opacity: 0;
-    transition: opacity 0.2s;
+/* Choice Buttons - VISUAL ICONS ONLY */
+.choice-btn {
+    display: none !important; /* Hide text buttons completely */
 }
 
-.choice-btn:hover::before {
-    opacity: 1;
+/* Visual choice indicators rendered on canvas */
+.visual-choice-marker {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 255, 255, 0.4) 0%, transparent 70%);
+    border: 3px solid rgba(0, 255, 255, 0.8);
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.3s ease;
+    animation: choicePulse 2s ease-in-out infinite;
 }
 
-.choice-btn:hover {
-    background: linear-gradient(90deg, rgba(0, 212, 255, 0.3) 0%, rgba(0, 212, 255, 0.05) 100%);
-    border-left-color: var(--neon-yellow);
-    color: var(--neon-yellow);
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
-    transform: translateX(5px);
+.visual-choice-marker:hover {
+    transform: scale(1.3);
+    border-color: rgba(255, 255, 0, 1);
+    background: radial-gradient(circle, rgba(255, 255, 0, 0.6) 0%, transparent 70%);
+    box-shadow: 0 0 40px rgba(255, 255, 0, 0.8);
 }
 
-.choice-btn:active {
-    transform: translateX(3px);
-    box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
+@keyframes choicePulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
 }
 
-/* Status Bar - Minimal HUD */
-#statusBar {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 100;
-    background: linear-gradient(90deg, rgba(0, 212, 255, 0.2) 0%, transparent 100%);
-    border-left: 3px solid var(--neon-cyan);
-    padding: 0.6rem 1.2rem;
-    font-size: 0.85rem;
-    font-weight: bold;
-    letter-spacing: 1px;
-    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
-    text-transform: uppercase;
-    backdrop-filter: blur(5px);
-}
-
-/* Game HUD Elements */
-.hud-element {
-    position: fixed;
-    z-index: 99;
-    font-family: 'Courier New', monospace;
-    color: var(--neon-cyan);
-    text-shadow: 0 0 10px var(--neon-cyan);
-}
-
-.hud-objective {
-    top: 70px;
-    left: 20px;
-    font-size: 0.75rem;
-    opacity: 0.7;
-    max-width: 300px;
-}
-
+/* Crosshair - VISUAL ONLY */
 .hud-crosshair {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 20px;
-    height: 20px;
-    border: 2px solid rgba(0, 255, 255, 0.3);
+    width: 4px;
+    height: 4px;
+    background: rgba(0, 255, 255, 0.6);
     border-radius: 50%;
     pointer-events: none;
     z-index: 50;
+    box-shadow:
+        0 0 10px rgba(0, 255, 255, 0.8),
+        0 0 20px rgba(0, 255, 255, 0.4);
 }
 
 /* Loading Screen */
