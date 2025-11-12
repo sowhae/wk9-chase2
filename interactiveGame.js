@@ -75,31 +75,31 @@ class InteractiveGame {
     }
 
     createBarScene() {
-        // Clickable areas in the bar
+        // Clickable areas in the bar - MUCH BIGGER
         this.hotspots = [
             {
-                x: this.canvas.width * 0.1,
-                y: this.canvas.height * 0.5,
-                width: 200,
-                height: 150,
+                x: this.canvas.width * 0.05,
+                y: this.canvas.height * 0.35,
+                width: 300,
+                height: 250,
                 label: 'EXIT LEFT',
                 action: () => this.loadScene('alley'),
                 color: '#ff00ff'
             },
             {
-                x: this.canvas.width * 0.45,
-                y: this.canvas.height * 0.3,
-                width: 200,
-                height: 150,
+                x: this.canvas.width * 0.4,
+                y: this.canvas.height * 0.25,
+                width: 300,
+                height: 250,
                 label: 'WINDOW',
                 action: () => this.loadScene('alley'),
                 color: '#00ffff'
             },
             {
-                x: this.canvas.width * 0.8,
-                y: this.canvas.height * 0.5,
-                width: 200,
-                height: 150,
+                x: this.canvas.width * 0.75,
+                y: this.canvas.height * 0.35,
+                width: 300,
+                height: 250,
                 label: 'EXIT RIGHT',
                 action: () => this.loadScene('alley'),
                 color: '#ffff00'
@@ -110,28 +110,28 @@ class InteractiveGame {
     createAlleyScene() {
         this.hotspots = [
             {
-                x: this.canvas.width * 0.15,
-                y: this.canvas.height * 0.4,
-                width: 180,
-                height: 200,
+                x: this.canvas.width * 0.1,
+                y: this.canvas.height * 0.3,
+                width: 280,
+                height: 280,
                 label: 'LADDER UP',
                 action: () => this.loadScene('mall'),
                 color: '#00ffff'
             },
             {
-                x: this.canvas.width * 0.5,
-                y: this.canvas.height * 0.6,
-                width: 250,
-                height: 150,
+                x: this.canvas.width * 0.45,
+                y: this.canvas.height * 0.5,
+                width: 300,
+                height: 250,
                 label: 'RUN FORWARD',
                 action: () => this.loadScene('mall'),
                 color: '#ff00ff'
             },
             {
-                x: this.canvas.width * 0.8,
-                y: this.canvas.height * 0.5,
-                width: 180,
-                height: 180,
+                x: this.canvas.width * 0.75,
+                y: this.canvas.height * 0.4,
+                width: 280,
+                height: 250,
                 label: 'DOOR',
                 action: () => this.loadScene('mall'),
                 color: '#ffff00'
@@ -143,28 +143,28 @@ class InteractiveGame {
         // Use actual mall image
         this.hotspots = [
             {
-                x: this.canvas.width * 0.2,
-                y: this.canvas.height * 0.6,
-                width: 220,
-                height: 200,
+                x: this.canvas.width * 0.15,
+                y: this.canvas.height * 0.5,
+                width: 300,
+                height: 270,
                 label: 'HIDE HERE',
                 action: () => this.loadScene('escape'),
                 color: '#00ff00'
             },
             {
-                x: this.canvas.width * 0.5,
-                y: this.canvas.height * 0.4,
-                width: 250,
-                height: 180,
+                x: this.canvas.width * 0.45,
+                y: this.canvas.height * 0.3,
+                width: 300,
+                height: 280,
                 label: 'ESCALATOR',
                 action: () => this.loadScene('escape'),
                 color: '#00ffff'
             },
             {
-                x: this.canvas.width * 0.75,
-                y: this.canvas.height * 0.7,
-                width: 200,
-                height: 150,
+                x: this.canvas.width * 0.7,
+                y: this.canvas.height * 0.6,
+                width: 300,
+                height: 270,
                 label: 'EXIT',
                 action: () => this.loadScene('escape'),
                 color: '#ff00ff'
@@ -237,6 +237,11 @@ class InteractiveGame {
 
         // Draw hotspots
         this.drawHotspots();
+
+        // Draw instruction overlay
+        if (this.currentScene !== 'escape') {
+            this.drawInstructions();
+        }
     }
 
     drawBar() {
@@ -381,9 +386,13 @@ class InteractiveGame {
             this.ctx.fillStyle = glow;
             this.ctx.fillRect(hotspot.x - 20, hotspot.y - 20, hotspot.width + 40, hotspot.height + 40);
 
+            // Solid fill inside hotspot
+            this.ctx.fillStyle = isHovered ? hotspot.color + '44' : hotspot.color + '22';
+            this.ctx.fillRect(hotspot.x, hotspot.y, hotspot.width, hotspot.height);
+
             // Border
-            this.ctx.strokeStyle = isHovered ? hotspot.color + 'ff' : hotspot.color + '88';
-            this.ctx.lineWidth = isHovered ? 6 : 3;
+            this.ctx.strokeStyle = isHovered ? hotspot.color + 'ff' : hotspot.color + 'cc';
+            this.ctx.lineWidth = isHovered ? 8 : 5;
             this.ctx.strokeRect(hotspot.x, hotspot.y, hotspot.width, hotspot.height);
 
             // Pulsing effect when hovered
@@ -428,6 +437,27 @@ class InteractiveGame {
                 this.ctx.fill();
             }
         }
+    }
+
+    drawInstructions() {
+        // Draw big instruction at top
+        const pulse = Math.sin(Date.now() * 0.003) * 0.2 + 0.8;
+
+        this.ctx.font = 'bold 48px monospace';
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'top';
+
+        // Background bar
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        this.ctx.fillRect(0, 0, this.canvas.width, 100);
+
+        // Glowing text
+        this.ctx.shadowBlur = 30 * pulse;
+        this.ctx.shadowColor = '#00ffff';
+        this.ctx.fillStyle = '#00ffff';
+        this.ctx.fillText('⬇ CLICK OPTIONS BELOW ⬇', this.canvas.width / 2, 30);
+
+        this.ctx.shadowBlur = 0;
     }
 
     drawNeonText(text, x, y, size, color) {
