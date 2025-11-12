@@ -25,15 +25,23 @@ class InteractiveGame {
     }
 
     loadImages() {
-        const imageList = ['desertedmall.png'];
+        const imageList = ['desertedmall.png', 'alleyway.jpg'];
         let loaded = 0;
+        let failed = 0;
 
         imageList.forEach(src => {
             const img = new Image();
             img.onload = () => {
                 this.images[src] = img;
                 loaded++;
-                if (loaded === imageList.length) {
+                if (loaded + failed === imageList.length) {
+                    this.start();
+                }
+            };
+            img.onerror = () => {
+                console.log(`Image ${src} not found, using procedural rendering`);
+                failed++;
+                if (loaded + failed === imageList.length) {
                     this.start();
                 }
             };
@@ -260,35 +268,60 @@ class InteractiveGame {
     }
 
     drawAlley() {
-        // Dark alley
-        const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
-        gradient.addColorStop(0, '#0a0a1f');
-        gradient.addColorStop(1, '#000510');
-        this.ctx.fillStyle = gradient;
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        // Try to use alleyway image if loaded
+        const img = this.images['alleyway.jpg'];
+        if (img) {
+            // Draw alleyway image
+            const scale = Math.max(this.canvas.width / img.width, this.canvas.height / img.height);
+            const x = (this.canvas.width - img.width * scale) / 2;
+            const y = (this.canvas.height - img.height * scale) / 2;
+            this.ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
 
-        // Buildings
-        this.ctx.fillStyle = '#050510';
-        this.ctx.fillRect(0, 0, this.canvas.width * 0.3, this.canvas.height);
-        this.ctx.fillRect(this.canvas.width * 0.7, 0, this.canvas.width * 0.3, this.canvas.height);
+            // Cyberpunk overlay
+            this.ctx.fillStyle = 'rgba(255, 0, 255, 0.08)';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Neon signs
-        this.drawNeonText('RAMEN', this.canvas.width * 0.15, 200, 36, '#ff00ff');
-        this.drawNeonText('24/7', this.canvas.width * 0.85, 300, 36, '#00ffff');
+            // Rain effect overlay
+            this.ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)';
+            for (let i = 0; i < 50; i++) {
+                const x = Math.random() * this.canvas.width;
+                const y = (Date.now() * 0.5 + i * 40) % this.canvas.height;
+                this.ctx.beginPath();
+                this.ctx.moveTo(x, y);
+                this.ctx.lineTo(x + 2, y + 15);
+                this.ctx.stroke();
+            }
+        } else {
+            // Fallback: procedural rendering
+            const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+            gradient.addColorStop(0, '#0a0a1f');
+            gradient.addColorStop(1, '#000510');
+            this.ctx.fillStyle = gradient;
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Ground
-        this.ctx.fillStyle = '#0a0a15';
-        this.ctx.fillRect(0, this.canvas.height * 0.8, this.canvas.width, this.canvas.height * 0.2);
+            // Buildings
+            this.ctx.fillStyle = '#050510';
+            this.ctx.fillRect(0, 0, this.canvas.width * 0.3, this.canvas.height);
+            this.ctx.fillRect(this.canvas.width * 0.7, 0, this.canvas.width * 0.3, this.canvas.height);
 
-        // Rain effect
-        this.ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)';
-        for (let i = 0; i < 50; i++) {
-            const x = Math.random() * this.canvas.width;
-            const y = (Date.now() * 0.5 + i * 40) % this.canvas.height;
-            this.ctx.beginPath();
-            this.ctx.moveTo(x, y);
-            this.ctx.lineTo(x + 2, y + 15);
-            this.ctx.stroke();
+            // Neon signs
+            this.drawNeonText('RAMEN', this.canvas.width * 0.15, 200, 36, '#ff00ff');
+            this.drawNeonText('24/7', this.canvas.width * 0.85, 300, 36, '#00ffff');
+
+            // Ground
+            this.ctx.fillStyle = '#0a0a15';
+            this.ctx.fillRect(0, this.canvas.height * 0.8, this.canvas.width, this.canvas.height * 0.2);
+
+            // Rain effect
+            this.ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)';
+            for (let i = 0; i < 50; i++) {
+                const x = Math.random() * this.canvas.width;
+                const y = (Date.now() * 0.5 + i * 40) % this.canvas.height;
+                this.ctx.beginPath();
+                this.ctx.moveTo(x, y);
+                this.ctx.lineTo(x + 2, y + 15);
+                this.ctx.stroke();
+            }
         }
     }
 
