@@ -5,6 +5,8 @@ class CyberpunkGame {
         this.currentScene = null;
         this.gameHistory = [];
         this.isLoading = true;
+        this.sceneRenderer = null;
+        this.mallImage = null;
 
         // DOM elements
         this.sceneTitle = document.getElementById('sceneTitle');
@@ -19,6 +21,68 @@ class CyberpunkGame {
 
         // Bind restart button
         this.restartButton.addEventListener('click', () => this.restart());
+
+        // Initialize scene renderer
+        this.initSceneRenderer();
+
+        // Load mall image
+        this.loadMallImage();
+    }
+
+    initSceneRenderer() {
+        const canvas = document.getElementById('sceneCanvas');
+        if (canvas && window.SceneRenderer) {
+            this.sceneRenderer = new SceneRenderer(canvas);
+            this.startSceneAnimation();
+        }
+    }
+
+    loadMallImage() {
+        this.mallImage = new Image();
+        this.mallImage.src = 'desertedmall.png';
+        this.mallImage.onload = () => {
+            console.log('Mall image loaded successfully');
+        };
+        this.mallImage.onerror = () => {
+            console.warn('Could not load mall image, using fallback');
+        };
+    }
+
+    startSceneAnimation() {
+        const animate = () => {
+            if (this.sceneRenderer && this.currentScene) {
+                // Render based on current scene theme
+                const theme = this.currentScene.visualTheme;
+
+                switch(theme) {
+                    case 'bar':
+                        this.sceneRenderer.renderBar();
+                        break;
+                    case 'alley':
+                    case 'rain':
+                        this.sceneRenderer.renderAlley();
+                        break;
+                    case 'rooftop':
+                        this.sceneRenderer.renderRooftop();
+                        break;
+                    case 'mall':
+                        this.sceneRenderer.renderMall(this.mallImage);
+                        break;
+                    case 'tunnels':
+                    case 'chase':
+                    case 'subway':
+                    case 'flight':
+                    case 'capture':
+                        // For these themes, use alley renderer (can be customized later)
+                        this.sceneRenderer.renderAlley();
+                        break;
+                    default:
+                        this.sceneRenderer.renderBar();
+                }
+            }
+            requestAnimationFrame(animate);
+        };
+        animate();
     }
 
     init() {
