@@ -358,14 +358,13 @@ class InteractiveGame {
     drawHotspots() {
         for (let hotspot of this.hotspots) {
             const isHovered = hotspot === this.hoveredHotspot;
+            const centerX = hotspot.x + hotspot.width / 2;
+            const centerY = hotspot.y + hotspot.height / 2;
 
             // Hotspot glow
             const glow = this.ctx.createRadialGradient(
-                hotspot.x + hotspot.width / 2,
-                hotspot.y + hotspot.height / 2,
-                0,
-                hotspot.x + hotspot.width / 2,
-                hotspot.y + hotspot.height / 2,
+                centerX, centerY, 0,
+                centerX, centerY,
                 Math.max(hotspot.width, hotspot.height)
             );
 
@@ -384,7 +383,7 @@ class InteractiveGame {
 
             // Border
             this.ctx.strokeStyle = isHovered ? hotspot.color + 'ff' : hotspot.color + '88';
-            this.ctx.lineWidth = isHovered ? 4 : 2;
+            this.ctx.lineWidth = isHovered ? 6 : 3;
             this.ctx.strokeRect(hotspot.x, hotspot.y, hotspot.width, hotspot.height);
 
             // Pulsing effect when hovered
@@ -398,6 +397,35 @@ class InteractiveGame {
                     hotspot.width + pulse * 2,
                     hotspot.height + pulse * 2
                 );
+            }
+
+            // Draw label text
+            this.ctx.font = `bold ${isHovered ? 28 : 24}px monospace`;
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+
+            // Text shadow for glow effect
+            this.ctx.shadowBlur = 20;
+            this.ctx.shadowColor = hotspot.color;
+            this.ctx.fillStyle = hotspot.color;
+            this.ctx.fillText(hotspot.label, centerX, centerY);
+
+            // Draw again for stronger glow
+            this.ctx.shadowBlur = 10;
+            this.ctx.fillStyle = isHovered ? '#ffffff' : hotspot.color;
+            this.ctx.fillText(hotspot.label, centerX, centerY);
+
+            // Reset shadow
+            this.ctx.shadowBlur = 0;
+
+            // Add arrow or indicator for direction
+            if (!isHovered) {
+                // Subtle pulsing dot in center
+                const pulseSize = Math.sin(Date.now() * 0.003) * 5 + 10;
+                this.ctx.fillStyle = hotspot.color + '88';
+                this.ctx.beginPath();
+                this.ctx.arc(centerX, centerY + 40, pulseSize, 0, Math.PI * 2);
+                this.ctx.fill();
             }
         }
     }
